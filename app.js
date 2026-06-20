@@ -1,25 +1,54 @@
+// Interface de connexion
 document.getElementById("app").innerHTML = `
-  <header>Messagerie</header>
+  <header>Connexion</header>
 
-  <div class="messages" id="messages">
-    <div class="message">Bienvenue dans le chat !</div>
+  <div class="login-box">
+    <input id="email" type="email" placeholder="Email">
+    <input id="password" type="password" placeholder="Mot de passe">
+    <button id="loginBtn">Se connecter</button>
+    <button id="signupBtn" class="secondary">Créer un compte</button>
   </div>
 
-  <div class="input-area">
-    <input id="messageInput" type="text" placeholder="Écrire un message...">
-    <button id="sendBtn">Envoyer</button>
-  </div>
+  <div id="status"></div>
 `;
 
-// Fonction d'envoi de message (temporaire, sans Firebase)
-document.getElementById("sendBtn").addEventListener("click", () => {
-  const input = document.getElementById("messageInput");
-  const text = input.value.trim();
+import("https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js").then(({ 
+  signInWithEmailAndPassword, 
+  createUserWithEmailAndPassword, 
+  onAuthStateChanged, 
+  signOut 
+}) => {
 
-  if (text !== "") {
-    const msgContainer = document.getElementById("messages");
-    msgContainer.innerHTML += `<div class="message me">${text}</div>`;
-    input.value = "";
-    msgContainer.scrollTop = msgContainer.scrollHeight;
-  }
+  const auth = window.auth;
+
+  // Connexion
+  document.getElementById("loginBtn").onclick = () => {
+    const email = document.getElementById("email").value;
+    const pass = document.getElementById("password").value;
+
+    signInWithEmailAndPassword(auth, email, pass)
+      .catch(err => alert(err.message));
+  };
+
+  // Création de compte
+  document.getElementById("signupBtn").onclick = () => {
+    const email = document.getElementById("email").value;
+    const pass = document.getElementById("password").value;
+
+    createUserWithEmailAndPassword(auth, email, pass)
+      .catch(err => alert(err.message));
+  };
+
+  // Détection de l'utilisateur connecté
+  onAuthStateChanged(auth, user => {
+    if (user) {
+      document.getElementById("app").innerHTML = `
+        <header>Bienvenue</header>
+        <p>Connecté en tant que : <b>${user.email}</b></p>
+        <button id="logoutBtn">Se déconnecter</button>
+      `;
+
+      document.getElementById("logoutBtn").onclick = () => signOut(auth);
+    }
+  });
 });
