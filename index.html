@@ -16,6 +16,25 @@
 <body>
   <div id="app">Chargement...</div>
 
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+    import { getAuth } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
+
+    // ⚠️ Mets ici TA configuration Firebase
+    const firebaseConfig = {
+      apiKey: "AIzaSyDrNalHqn089lJbg_IAvIoE6ioxqansQJg",
+      authDomain: "ksos-messages.firebaseapp.com",
+      projectId: "ksos-messages",
+      storageBucket: "ksos-messages.firebasestorage.app",
+      messagingSenderId: "179748591948",
+      appId: "1:179748591948:web:0575d08e206a55c02dd7e9"
+    }
+  
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+  
+    window.auth = auth; // on expose auth pour app.js
+  </script>
   <script src="app.js"></script>
 </body>
 </html>
