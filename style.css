@@ -1,0 +1,73 @@
+/* Style global */
+body {
+  margin: 0;
+  padding: 0;
+  font-family: Arial, sans-serif;
+  background: #f5f5f5;
+  color: #333;
+}
+
+/* Conteneur principal */
+#app {
+  max-width: 600px;
+  margin: 0 auto;
+  padding: 20px;
+}
+
+/* En-tête */
+header {
+  background: #0d6efd;
+  color: white;
+  padding: 15px;
+  text-align: center;
+  font-size: 20px;
+  font-weight: bold;
+}
+
+/* Zone de messages */
+.messages {
+  background: white;
+  border-radius: 8px;
+  padding: 10px;
+  height: 60vh;
+  overflow-y: auto;
+  box-shadow: 0 0 5px rgba(0,0,0,0.1);
+}
+
+/* Un message */
+.message {
+  padding: 8px 12px;
+  margin: 8px 0;
+  background: #e9ecef;
+  border-radius: 6px;
+  max-width: 80%;
+}
+
+/* Message envoyé par l'utilisateur */
+.message.me {
+  background: #0d6efd;
+  color: white;
+  margin-left: auto;
+}
+
+/* Zone de saisie */
+.input-area {
+  display: flex;
+  margin-top: 10px;
+}
+
+.input-area input {
+  flex: 1;
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 6px 0 0 6px;
+}
+
+.input-area button {
+  padding: 10px 15px;
+  border: none;
+  background: #0d6efd;
+  color: white;
+  border-radius: 0 6px 6px 0;
+  cursor: pointer;
+}
