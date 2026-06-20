@@ -6,7 +6,6 @@ document.getElementById("app").innerHTML = `
     <input id="email" type="email" placeholder="Email">
     <input id="password" type="password" placeholder="Mot de passe">
     <button id="loginBtn">Se connecter</button>
-    <button id="signupBtn" class="secondary">Créer un compte</button>
   </div>
 
   <div id="status"></div>
