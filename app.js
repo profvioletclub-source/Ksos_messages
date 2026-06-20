@@ -51,9 +51,11 @@ import("https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js").then(({
     // Détection de connexion
     onAuthStateChanged(auth, user => {
       if (user) {
+        const pseudo = user.email.split("@")[0];
+
         document.getElementById("app").innerHTML = `
           <header>Bienvenue</header>
-          <p>Connecté en tant que : <b>${user.email}</b></p>
+          <p>Connecté en tant que : <b>${pseudo}</b></p>
           <button id="logoutBtn">Se déconnecter</button>
         `;
 
