@@ -1,9 +1,8 @@
-// Interface de connexion
 document.getElementById("app").innerHTML = `
   <header>Connexion</header>
 
   <div class="login-box">
-    <input id="email" type="email" placeholder="Email">
+    <input id="pseudo" type="text" placeholder="Pseudo">
     <input id="password" type="password" placeholder="Mot de passe">
     <button id="loginBtn">Se connecter</button>
   </div>
@@ -13,41 +12,54 @@ document.getElementById("app").innerHTML = `
 
 import("https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js").then(({ 
   signInWithEmailAndPassword, 
-  createUserWithEmailAndPassword, 
   onAuthStateChanged, 
   signOut 
 }) => {
 
-  const auth = window.auth;
+  import("https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js").then(({ 
+    getFirestore,
+    collection,
+    query,
+    where,
+    getDocs
+  }) => {
 
-  // Connexion
-  document.getElementById("loginBtn").onclick = () => {
-    const email = document.getElementById("email").value;
-    const pass = document.getElementById("password").value;
+    const auth = window.auth;
+    const db = getFirestore();
 
-    signInWithEmailAndPassword(auth, email, pass)
-      .catch(err => alert(err.message));
-  };
+    document.getElementById("loginBtn").onclick = async () => {
+      const pseudo = document.getElementById("pseudo").value.trim();
+      const pass = document.getElementById("password").value;
 
-  // Création de compte
-  document.getElementById("signupBtn").onclick = () => {
-    const email = document.getElementById("email").value;
-    const pass = document.getElementById("password").value;
+      // Chercher l'utilisateur par pseudo
+      const q = query(collection(db, "users"), where("pseudo", "==", pseudo));
+      const snap = await getDocs(q);
 
-    createUserWithEmailAndPassword(auth, email, pass)
-      .catch(err => alert(err.message));
-  };
+      if (snap.empty) {
+        alert("Pseudo inconnu");
+        return;
+      }
 
-  // Détection de l'utilisateur connecté
-  onAuthStateChanged(auth, user => {
-    if (user) {
-      document.getElementById("app").innerHTML = `
-        <header>Bienvenue</header>
-        <p>Connecté en tant que : <b>${user.email}</b></p>
-        <button id="logoutBtn">Se déconnecter</button>
-      `;
+      const userData = snap.docs[0].data();
+      const email = userData.email;
 
-      document.getElementById("logoutBtn").onclick = () => signOut(auth);
-    }
+      // Connexion Firebase Auth
+      signInWithEmailAndPassword(auth, email, pass)
+        .catch(err => alert("Erreur : " + err.message));
+    };
+
+    // Détection de connexion
+    onAuthStateChanged(auth, user => {
+      if (user) {
+        document.getElementById("app").innerHTML = `
+          <header>Bienvenue</header>
+          <p>Connecté en tant que : <b>${user.email}</b></p>
+          <button id="logoutBtn">Se déconnecter</button>
+        `;
+
+        document.getElementById("logoutBtn").onclick = () => signOut(auth);
+      }
+    });
+
   });
 });
