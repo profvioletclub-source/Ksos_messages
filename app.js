@@ -31,31 +31,32 @@ import("https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js").then(({
       const pseudo = document.getElementById("pseudo").value.trim();
       const pass = document.getElementById("password").value;
 
-      // Chercher l'utilisateur par pseudo
+      // Recherche Firestore
       const q = query(collection(db, "users"), where("pseudo", "==", pseudo));
       const snap = await getDocs(q);
 
       if (snap.empty) {
-        alert("Pseudo inconnu");
+        alert("Pseudo introuvable dans Firestore");
         return;
       }
 
       const userData = snap.docs[0].data();
       const email = userData.email;
 
-      // Connexion Firebase Auth
+      if (!email) {
+        alert("Erreur : le champ 'email' est manquant dans Firestore");
+        return;
+      }
+
       signInWithEmailAndPassword(auth, email, pass)
-        .catch(err => alert("Erreur : " + err.message));
+        .catch(err => alert("Erreur Auth : " + err.message));
     };
 
-    // Détection de connexion
     onAuthStateChanged(auth, user => {
       if (user) {
-        const pseudo = user.email.split("@")[0];
-
         document.getElementById("app").innerHTML = `
           <header>Bienvenue</header>
-          <p>Connecté en tant que : <b>${pseudo}</b></p>
+          <p>Connecté en tant que : <b>${user.email}</b></p>
           <button id="logoutBtn">Se déconnecter</button>
         `;
 
